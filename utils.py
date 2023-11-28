@@ -5,16 +5,16 @@ def gradient_optimization(sym_fn, vars, init_vals, alpha, max_iter,
                             
     gradient = sym.derive_by_array(sym_fn, vars)
 
-    params = np.array(init_vals, dtype=float)
+    params = np.array(init_vals)
     param_list = [params]
 
     sub_dict = {var:val for var, val in zip(vars, params)}
-    f_val = sym_fn.subs(sub_dict).evalf()
+    f_val = sym_fn.subs(sub_dict)
 
     found = False
 
     for i in range(1, max_iter+1):
-        grad = np.array([g.subs(sub_dict).evalf() for g in gradient], dtype=float)
+        grad = gradient.subs(sub_dict)
 
         if mode == 'min':
             params = params - alpha * grad
@@ -25,7 +25,7 @@ def gradient_optimization(sym_fn, vars, init_vals, alpha, max_iter,
 
         old_f_val = f_val
         sub_dict = {var:val for var, val in zip(vars, params)}
-        f_val = sym_fn.subs(sub_dict).evalf()
+        f_val = sym_fn.subs(sub_dict)
 
         if (verbosity > 0) and (i % verbosity == 0):
             param_str = ', '.join([f'{p:.4f}' for p in params])
